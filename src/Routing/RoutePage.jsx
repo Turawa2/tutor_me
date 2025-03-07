@@ -9,6 +9,7 @@ import TutorLogin from "../admin-pages/TutorLogin";
 import Login from "../user-pages/Login";
 import AdminContactList from "../admin-pages/AdminContactList";
 import AdminChat from "../admin-pages/AdminChat";
+import Dash from "../user-pages/Dash";
 
 function RoutePage() {
   return (
@@ -31,6 +32,7 @@ function RoutePage() {
          <Route path="/register" element={<RegisterUser />} />
          <Route path="/msgList" element={<UserContactList />} />
          <Route path="/login" element={<Login />} />
+         <Route path="/dash" element={<Dash />} />
         
         
 

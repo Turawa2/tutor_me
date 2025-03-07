@@ -19,39 +19,34 @@ function TutorLogin() {
 
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
 
     setLoading(true);
     setError(null);
 
     try {
-      // Step 1: Fetch the tutor from the tutors table
       const { data: tutorData, error: tutorError } = await supabase
         .from("tutors")
         .select("*")
-        .eq("email", email) // Match the email
-        .maybeSingle(); // Use .maybeSingle() to handle cases where no rows are returned
+        .eq("email", email) 
+        .maybeSingle(); 
 
       if (tutorError) {
-        throw tutorError; // Throw error if there's a query error
+        throw tutorError;
       }
 
       if (!tutorData) {
-        // If the tutor is not found, show an error
         setError("Tutor not found. Please sign up.");
         return;
       }
 
-      // Step 2: Compare the provided password with the password in the database
       if (tutorData.password !== password) {
         setError("Invalid password.");
         return;
       }
 
-      // Step 3: If the password is valid, store the tutor's email in local storage
       localStorage.setItem("tutorEmail", tutorData.email);
 
-      // Step 4: Navigate to /msgList
       navigate("/adminMsgList");
 
       console.log("Tutor logged in:", tutorData);
@@ -157,13 +152,13 @@ function TutorLogin() {
                       Don't have an account? Sign Up {" "}
                       <a
                        onClick={handleUserReg}
-                        className="text-primary text-gradient font-weight-bold"
+                        className="text-primary text-gradient font-weight-bold cursor-pointer"
                       >
                         User,
                       </a> 
                       <a
                         onClick={handleTutorLogin}
-                        className="text-primary text-gradient font-weight-bold"
+                        className="text-primary text-gradient font-weight-bold cursor-pointer"
                       >
                         Tutor
                       </a>

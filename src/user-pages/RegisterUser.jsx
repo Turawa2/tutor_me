@@ -23,7 +23,7 @@ function RegisterUser() {
  
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
   
     setLoading(true);
     setError(null);
@@ -32,7 +32,6 @@ function RegisterUser() {
     console.log("Attempting to register with:", { email, password });
   
     try {
-      // Use Supabase's signUp method to register the user
       const { user, error } = await supabase.auth.signUp({
         email,
         password,
@@ -44,7 +43,6 @@ function RegisterUser() {
         throw error;
       }
   
-      // If registration is successful
       setSuccess(true);
       console.log("User registered:", user);
     } catch (error) {
@@ -135,11 +133,11 @@ function RegisterUser() {
                     )}
                     <p className="mt-4 text-sm text-center">
                       Already have an Account? Login with
-                      <a  onClick={handleUserLogin} className="text-primary text-gradient font-weight-bold">
+                      <a  onClick={handleUserLogin} className="text-primary text-gradient font-weight-bold cursor-pointer">
                         {" "}
                         User
                       </a>
-                      <a onClick={handleTutorLogin} className="text-primary text-gradient font-weight-bold">
+                      <a onClick={handleTutorLogin} className="text-primary text-gradient font-weight-bold cursor-pointer">
                         {" "}
                         Tutor
                       </a>

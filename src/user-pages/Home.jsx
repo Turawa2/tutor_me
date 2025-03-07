@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../Link/SupaBaseClient";
-import { FaThumbsUp, FaThumbsDown } from "react-icons/fa"; // Import like and dislike icons
+import { FaThumbsUp, FaThumbsDown } from "react-icons/fa"; 
 
 function Home() {
   const navigate = useNavigate();
-  const [tutors, setTutors] = useState([]); // All tutors fetched from Supabase
-  const [filteredTutors, setFilteredTutors] = useState([]); // Tutors filtered by search term
+  const [tutors, setTutors] = useState([]); 
+  const [filteredTutors, setFilteredTutors] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search input
-  const [user, setUser] = useState(null); // State to track the logged-in user
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [user, setUser] = useState(null); 
 
   // Fetch the logged-in user
   useEffect(() => {
@@ -29,7 +29,6 @@ function Home() {
     fetchUser();
   }, []);
 
-  // Fetch tutors data from Supabase
   useEffect(() => {
     const fetchTutors = async () => {
       try {
@@ -41,8 +40,8 @@ function Home() {
           throw error;
         }
 
-        setTutors(data); // Set all tutors
-        setFilteredTutors(data); // Initialize filtered tutors with all tutors
+        setTutors(data); 
+        setFilteredTutors(data);
       } catch (error) {
         setError(error.message);
         console.error("Error fetching tutors:", error);
@@ -54,45 +53,40 @@ function Home() {
     fetchTutors();
   }, []);
 
-  // Handle search input change
   const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase(); // Get the search term
+    const term = event.target.value.toLowerCase(); 
     setSearchTerm(term);
 
-    // Filter tutors by full_name or courses
     const filtered = tutors.filter(
       (tutor) =>
         tutor.full_name.toLowerCase().includes(term) ||
         tutor.courses.toLowerCase().includes(term)
     );
 
-    setFilteredTutors(filtered); // Update the filtered tutors list
+    setFilteredTutors(filtered); 
   };
 
   // Handle vote
   const handleVote = async (tutorEmail, voteType) => {
     try {
-      // Get the current user
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         throw new Error("User not logged in");
       }
 
-      // Check if the user has already voted for this tutor
       const { data: existingVote, error: voteError } = await supabase
         .from("tutor_votes")
         .select("*")
         .eq("tutor_email", tutorEmail)
         .eq("user_id", user.id)
-        .maybeSingle(); // ✅ Prevents error if no rows found
+        .maybeSingle(); 
 
       if (voteError) {
         console.error("Vote error:", voteError);
         throw voteError;
       }
 
-      // If the user is toggling their vote (clicking the same button again)
       if (existingVote && existingVote.vote_type === voteType) {
         // Remove the vote
         const { error: deleteError } = await supabase
@@ -104,7 +98,6 @@ function Home() {
           throw deleteError;
         }
 
-        // Decrement the like or dislike count
         const { error: updateError } = await supabase
           .rpc("decrement_column", {
             table_name: "tutors",
@@ -116,8 +109,7 @@ function Home() {
           throw updateError;
         }
       } else if (existingVote && existingVote.vote_type !== voteType) {
-        // If the user is switching their vote (e.g., from like to dislike)
-        // Remove the previous vote
+       
         const { error: deleteError } = await supabase
           .from("tutor_votes")
           .delete()
@@ -127,7 +119,6 @@ function Home() {
           throw deleteError;
         }
 
-        // Decrement the previous vote count
         const { error: decrementError } = await supabase
           .rpc("decrement_column", {
             table_name: "tutors",
@@ -139,7 +130,6 @@ function Home() {
           throw decrementError;
         }
 
-        // Add the new vote
         const { error: insertError } = await supabase
           .from("tutor_votes")
           .insert([
@@ -154,7 +144,6 @@ function Home() {
           throw insertError;
         }
 
-        // Increment the new vote count
         const { error: incrementError } = await supabase
           .rpc("increment_column", {
             table_name: "tutors",
@@ -166,7 +155,6 @@ function Home() {
           throw incrementError;
         }
       } else {
-        // If the user is voting for the first time
         const { error: insertError } = await supabase
           .from("tutor_votes")
           .insert([
@@ -181,7 +169,6 @@ function Home() {
           throw insertError;
         }
 
-        // Increment the like or dislike count
         const { error: updateError } = await supabase
           .rpc("increment_column", {
             table_name: "tutors",
@@ -194,7 +181,6 @@ function Home() {
         }
       }
 
-      // Refresh the tutors list
       const { data: updatedTutors, error: fetchError } = await supabase
         .from("tutors")
         .select("*");
@@ -203,7 +189,6 @@ function Home() {
         throw fetchError;
       }
 
-      // Sort tutors by rating (likes - dislikes) in descending order
       const sortedTutors = updatedTutors.sort((a, b) => (b.likes - b.dislikes) - (a.likes - a.dislikes));
 
       setTutors(sortedTutors);
@@ -221,25 +206,41 @@ function Home() {
     navigate("/msgList");
   };
 
+  const handleDash = () => {
+    navigate("/dash");
+  };
+
+
+  const handleGame = () => {
+    window.open("https://www.educationalgames.com", "_blank");
+  };
+
+  const handleLibrary = () => {
+    window.open("https://www.openlibrary.org", "_blank");
+  };
+
+  const handleQuiez = () => {
+    window.open("https://www.quizlet.com", "_blank");
+  };
+
+
   const handleChat = (email) => {
     navigate(`/chat/${email}`);
   };
 
   const handleAuth = async () => {
     if (user) {
-      // If user is logged in, log them out
       try {
         const { error } = await supabase.auth.signOut();
         if (error) {
           throw error;
         }
-        setUser(null); // Clear the user state
-        navigate("/login"); // Redirect to login page
+        setUser(null); 
+        navigate("/login");
       } catch (error) {
         console.error("Error logging out:", error);
       }
     } else {
-      // If user is not logged in, redirect to login page
       navigate("/login");
     }
   };
@@ -266,12 +267,71 @@ function Home() {
           >
             2Tor_Me
           </a>
-          <button className="btn btn-danger ms-auto" onClick={handleAuth}>
-            {user ? "Logout" : "Login"} {/* Change button text based on user state */}
-          </button> &ensp;
+          <button class="navbar-toggler shadow-none ms-2" type="button" 
+          data-bs-toggle="collapse" data-bs-target="#navigation"
+           aria-controls="navigation" aria-expanded="false"
+            aria-label="Toggle navigation">
+
+      <span class="navbar-toggler-icon mt-2">
+        <span class="navbar-toggler-bar bar1"></span>
+        <span class="navbar-toggler-bar bar2"></span>
+        <span class="navbar-toggler-bar bar3"></span>
+      </span>
+    </button>
+          <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0 ms-lg-12 ps-lg-5" id="navigation">
+           <ul class="navbar-nav navbar-nav-hover ms-auto">
+        <li class="nav-item dropdown dropdown-hover mx-2 ms-lg-6">
+     
+        <li class="nav-item my-auto ms-3 ms-lg-0">
+        <a  class="btn btn-sm  bg-success text-light mb-0 me-1 mt-2 mt-md-0"  onClick={handleDash} >
+             Dashboard
+           </a>
+
+           <a  class="btn btn-sm  bg-secondary text-light  mb-0 me-1 mt-2 mt-md-0"  onClick={handleLibrary} >
+             Library
+           </a>
+
+           <a  class="btn btn-sm  bg-primary text-light mb-0 me-1 mt-2 mt-md-0"  onClick={handleGame} >
+             Games
+           </a>
+
+           <a  class="btn btn-sm  bg-primary text-light mb-0 me-1 mt-2 mt-md-0"  onClick={handleQuiez} >
+             Quiez
+           </a>
+
+           <a  class="btn btn-sm  bg-dark text-light mb-0 me-1 mt-2 mt-md-0" onClick={handleMsg} >
+             Chats
+           </a>
+
+
+          <a  class="btn btn-sm  bg-danger text-light mb-0 me-1 mt-2 mt-md-0"  onClick={handleAuth} >
+          {user ? "Logout" : "Login"} 
+           </a>
+
+        
+           
+        </li>
+
+        
+        </li>
+      </ul>
+    </div>
+
+          {/* 
           <button className="btn btn-info" onClick={handleMsg}>
             Chats
-          </button>
+          </button> &ensp;
+          <button className="btn btn-info" onClick={handleMsg}>
+            Games
+          </button> &ensp;
+
+          <button className="btn btn-info" onClick={handleMsg}>
+            Library
+          </button> &ensp;
+
+          <button className="btn btn-info" >
+            Dashboard
+          </button> */}
         </div>
       </nav>
 
@@ -311,7 +371,7 @@ function Home() {
                     className="form-control text-white"
                     placeholder="Search......"
                     value={searchTerm}
-                    onChange={handleSearch} // Handle search input change
+                    onChange={handleSearch} 
                   />
                 </div>
               </div>

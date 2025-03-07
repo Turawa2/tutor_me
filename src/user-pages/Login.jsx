@@ -20,25 +20,23 @@ function Login() {
   const handleLogin = async (e) => {
 
    
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
 
     setLoading(true);
     setError(null);
 
     try {
-      // Step 1: Attempt to log in using Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (authError) {
-        throw authError; // Throw error if authentication fails
+        throw authError; 
       }
 
-      // Step 2: If login is successful, navigate to the home page
       console.log("User logged in:", authData.user);
-      navigate("/"); // Redirect to the home page
+      navigate("/"); 
     } catch (error) {
       if (error.message === "Invalid login credentials") {
         setError("Invalid email or password.");
@@ -145,13 +143,13 @@ function Login() {
                       Don't have an account? Sign Up {" "}
                       <a
                        onClick={handleUserReg}
-                        className="text-primary text-gradient font-weight-bold"
+                        className="text-primary text-gradient font-weight-bold cursor-pointer"
                       >
                         User,
                       </a> 
                       <a
                         onClick={handleTutorLogin}
-                        className="text-primary text-gradient font-weight-bold"
+                        className="text-primary text-gradient font-weight-bold cursor-pointer"
                       >
                         Tutor
                       </a>

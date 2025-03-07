@@ -7,8 +7,8 @@ function Register() {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [qualification, setQualification] = useState("");
-  const [courses, setCourses] = useState(""); // New state for courses
-  const [password, setPassword] = useState(""); // New state for password
+  const [courses, setCourses] = useState(""); 
+  const [password, setPassword] = useState(""); 
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,34 +30,31 @@ function Register() {
 
 
   
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
 
     setLoading(true);
     setError(null);
     setSuccess(false);
 
     try {
-      // Step 1: Upload the image file to Supabase Storage
       let imageUrl = null;
       if (imageFile) {
         const fileExt = imageFile.name.split(".").pop();
-        const fileName = `${Date.now()}.${fileExt}`; // Use a unique file name
+        const fileName = `${Date.now()}.${fileExt}`; 
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("tutor-images") // Ensure this matches the bucket name
+          .from("tutor-images") 
           .upload(fileName, imageFile);
 
         if (uploadError) {
           throw uploadError;
         }
 
-        // Get the public URL of the uploaded image
         const { data: urlData } = supabase.storage
           .from("tutor-images")
           .getPublicUrl(fileName);
         imageUrl = urlData.publicUrl;
       }
 
-      // Step 2: Insert tutor data into the `tutors` table
       const { data: tutorData, error: tutorError } = await supabase
         .from("tutors")
         .insert([
@@ -66,8 +63,8 @@ function Register() {
             email,
             phone_number: phoneNumber,
             qualification,
-            courses, // Include the courses field
-            password, // Include the password field (stored in plain text)
+            courses, 
+            password, 
             profile_image: imageUrl,
           },
         ]);
@@ -76,10 +73,9 @@ function Register() {
         throw tutorError;
       }
 
-      // If registration is successful
       setSuccess(true);
       console.log("Tutor registered:", tutorData);
-      navigate("/login"); // Redirect to the login page
+      navigate("/login"); 
     } catch (error) {
       setError(error.message);
       console.error("Registration error:", error);
@@ -213,11 +209,11 @@ function Register() {
                     )}
                     <p className="mt-4 text-sm text-center">
                       Already have an Account? Login with
-                      <a  onClick={handleUserLogin} className="text-primary text-gradient font-weight-bold">
+                      <a  onClick={handleUserLogin} className="text-primary text-gradient font-weight-bold cursor-pointer">
                         {" "}
                         User
                       </a>
-                      <a onClick={handleTutorLogin} className="text-primary text-gradient font-weight-bold">
+                      <a onClick={handleTutorLogin} className="text-primary text-gradient font-weight-bold cursor-pointer">
                         {" "}
                         Tutor
                       </a>

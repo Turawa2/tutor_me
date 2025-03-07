@@ -1,46 +1,62 @@
 .contact-list-container {
-    padding: 20px;
-    background-color: #f5f5f5;
-    height: 100vh;
-  }
-  
-  .contact-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .contact-list-header h2 {
-    margin: 0;
-  }
-  
-  .logout-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .logout-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .contact-list {
-    margin-top: 20px;
-  }
-  
-  .contact-item {
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .contact-item:hover {
-    background-color: #e9ecef;
-  }
+  padding: 20px;
+  background-color: #f5f5f5;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+}
+
+.contact-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px; /* Limit the width of the header */
+}
+
+.contact-list-header h2 {
+  margin: 0;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #0056b3;
+}
+
+.contact-list {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px; 
+}
+
+.contact-item {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-item:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+}
+
+.reminder-time {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 10px;
+}
